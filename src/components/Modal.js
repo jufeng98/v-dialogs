@@ -5,7 +5,7 @@ export default {
   name: 'DialogModal',
   mixins: [mixins, render],
   props: {
-    component: [Object, Function],
+    url: String,
     /**
      * Send parameters to Component
      * you need use props to receive this params in component
@@ -30,8 +30,10 @@ export default {
   data () {
     return {
       maximize: false,
-      animate: false
-    }
+      animate: false,
+      lastScreenX: null,
+      lastScreenY: null
+    };
   },
   computed: {
     classes () {
@@ -59,7 +61,7 @@ export default {
           },
           on: {
             click: () => {
-              this.closeDialog(true)
+              this.closeDialog(true, {}, true);
             }
           }
         }, [
@@ -93,16 +95,22 @@ export default {
     child.push(h('div', {
       class: 'v-dialog-body',
       style: {
-        height: this.bodyHeight + 'px'
+        height: 'calc(100% - 30px)',
+        overflow: 'hidden'
       }
     }, [
       // Dynamic component
-      h(this.component, {
-        props: this.params,
+      h('iframe', {
+        attrs: {
+          style: 'width:100%;height:100%;',
+          frameborder: '0',
+          onload: 'window.iframeRequestOnload(this.contentWindow)',
+          src: this.url
+        },
         on: {
           close: this.modalClose
         }
-      })
+      }),
     ]))
 
     const dialog = h('div', {
@@ -111,9 +119,9 @@ export default {
         'v-dialog-default-animated': this.animate
       },
       style: {
-        width: this.width + 'px',
-        height: this.height + 'px',
-        top: this.dialogTop + 'px'
+        width: this.dialogWidth + 'px',
+        height: this.dialogHeight + 'px',
+        top: this.dialogTop + 'px',
       }
     }, [
       this.buildDlgContent(h, {
@@ -146,13 +154,12 @@ export default {
     }
   },
   mounted () {
+    window.modalVue = this;
     this.$nextTick(() => {
-      if (this.titleBar) {
-        const headerHeight = this.$refs.header.offsetHeight// this.$refs.header.getBoundingClientRect().height;
-        this.bodyHeight = this.height - headerHeight
-      } else this.bodyHeight = this.height
-
       this.modalAdjust()
     })
+  },
+  destroyed () {
+    window.modalVue = undefined;
   }
 }

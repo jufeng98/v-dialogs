@@ -48,10 +48,13 @@ export default {
      */
     Object.defineProperty(Vue.prototype, options.instanceName || '$dlg', {
       value: {
-        modal (component, params = {}) {
-          if (!component) return
+        modal (url, params = {}) {
+          if (!url) return
           params = merge(params)
-          params.component = component
+          params.url = url
+          if (typeof params.ondestroy === 'function') {
+            params.callback = params.ondestroy;
+          }
           return dlg.addModal(params)
         },
         /**

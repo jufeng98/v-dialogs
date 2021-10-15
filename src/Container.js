@@ -65,12 +65,23 @@ export default {
         case MODAL:
           options.props = {
             ...options.props,
-            component: val.component,
+            url: val.url,
             params: val.params,
             fullWidth: val.fullWidth,
             closeButton: val.closeButton,
             maxButton: val.maxButton
           }
+          let w = window;
+          window.iframeRequestOnload = iframeWindow => {
+            w.iframeRequestOnload = undefined;
+            if (val.onload) {
+              val.onload(iframeWindow);
+            }
+            iframeWindow.closeIframeWindow = data => {
+              this.closeDialog(val.dialogKey, false, data);
+            };
+            iframeWindow.CloseOwnerWindow = iframeWindow.closeIframeWindow;
+          };
           break
         case MASK:
           options.props.backdrop = true
@@ -210,17 +221,21 @@ export default {
      * @param cancel[boolean] - trigger cancelCallback or not
      * @param data[object] - return data when close dialog(Modal)
      */
-    closeDialog (key, cancel, data) {
+    closeDialog (key, cancel, data, closeButtonClick) {
       if (!key) return
       const dlg = this.dialogs.find(val => val.dialogKey === key)
       if (dlg) {
-        this.dialogs = this.dialogs.filter(val => val.dialogKey !== key)
+        this.dialogs = this.dialogs.filter(val => val.dialogKey !== key);
         this.$nextTick(() => {
+          if (closeButtonClick && dlg.onclosebuttonclick) {
+            dlg.onclosebuttonclick();
+            return;
+          }
           if (dlg.callback && typeof dlg.callback === 'function' && !cancel) dlg.callback(data)
           if (cancel && dlg.cancelCallback && typeof dlg.cancelCallback === 'function') {
             dlg.cancelCallback()
           }
-        })
+        });
       }
     },
     /**

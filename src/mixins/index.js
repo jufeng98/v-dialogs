@@ -36,14 +36,14 @@ export default {
      * Dialog width
      */
     width: {
-      type: Number,
+      type: [Number, String],
       default: 700
     },
     /**
      * Dialog height
      */
     height: {
-      type: Number,
+      type: [Number, String],
       default: 400
     },
     i18n: Object,
@@ -82,6 +82,8 @@ export default {
     return {
       bodyHeight: 50,
       dialogTop: 0,
+      dialogWidth: 0,
+      dialogHeight: 0,
       dialogZIndex: 0,
       backdropZIndex: 0,
       resizeTimeout: null,
@@ -110,7 +112,9 @@ export default {
      */
     adjust () {
       const browserHeight = window.innerHeight || document.documentElement.clientHeight
-      this.dialogTop = (browserHeight - this.height) / 2
+      let tmp = (browserHeight - this.dialogHeight) / 2
+      this.dialogTop = tmp > 30 ? tmp : 30;
+
     },
     /**
      * Close current dialog
@@ -118,10 +122,10 @@ export default {
      * @param trigger [boolean] whether close dialog and trigger callback function
      * @param data [object] return data when dialog close(only for modal)
      */
-    closeDialog (trigger, data) {
+    closeDialog (trigger, data, closeButtonClick) {
       this.show = false
       setTimeout(() => {
-        this.$emit('close', this.dialogKey, trigger, data)
+        this.$emit('close', this.dialogKey, trigger, data, closeButtonClick)
       }, 200)
     },
     calcLayerLevel () {
@@ -151,6 +155,14 @@ export default {
   },
   mounted () {
     this.show = true
+    if (typeof this.width === 'string') {
+      let windowWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+      this.dialogWidth = Math.round(windowWidth * parseFloat(this.width) / 100);
+    }
+    if (typeof this.height === 'string') {
+      let windowHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+      this.dialogHeight = Math.round(windowHeight * parseFloat(this.height) / 100);
+    }
     this.calcLayerLevel()
     this.autoClose()
 

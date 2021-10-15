@@ -35,6 +35,9 @@ export default {
 
       const content = h('div', {
         class: className,
+        style: {
+          'height': '100%'
+        },
         directives: [{
           name: 'show',
           value: this.show

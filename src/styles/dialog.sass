@@ -81,17 +81,18 @@ div.v-dialog
   div.v-dialog-header
     padding: 0
     border-bottom: 0
+    height: 30px
     /*background-color: #eee*/
     h3
       margin: 0
-      line-height: 42px
-      height: 42px
+      line-height: 30px
+      height: 30px
       font-size: 18px
       padding-left: 15px
     button
       -webkit-transition: all .5s cubic-bezier(.175,.885,.32,1)
       transition: all .5s cubic-bezier(.175,.885,.32,1)
-      height: 42px
+      height: 30px
       width: 60px
       text-shadow: none
       outline: none !important
@@ -105,12 +106,14 @@ div.v-dialog
         opacity: 1
       &.v-dialog-btn__close
         font-weight: normal
+        height: 30px
       &.v-dialog-btn__close:hover
         background-color: #E81123
         color: white
       &.v-dialog-btn__maximize
         /*margin-right: 7px*/
         /*margin-top: 2px*/
+        height: 30px
         &:hover
           background-color: #E0E0E0
       i
@@ -123,6 +126,15 @@ div.v-dialog
     overflow: auto
     -moz-box-sizing: border-box
     box-sizing: border-box
+  div.v-dialog-resizer-trigger
+    position: absolute
+    width: 14px
+    height: 12px
+    right: 1px
+    bottom: 1px
+    overflow: hidden
+    cursor: se-resize
+    background: url(data:image/gif;base64,R0lGODlhDQAMAIABAIuLi////yH5BAEAAAEALAAAAAANAAwAAAIUjI+pAbDYnpwqMlexpRzqf1gi1hUAOw==) no-repeat right bottom
 
 div.v-dialog-overlay
   position: fixed
