@@ -158,10 +158,14 @@ export default {
     if (typeof this.width === 'string') {
       let windowWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
       this.dialogWidth = Math.round(windowWidth * parseFloat(this.width) / 100);
+    } else {
+      this.dialogWidth = this.width;
     }
     if (typeof this.height === 'string') {
       let windowHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
       this.dialogHeight = Math.round(windowHeight * parseFloat(this.height) / 100);
+    } else {
+      this.dialogHeight = this.height;
     }
     this.calcLayerLevel()
     this.autoClose()
