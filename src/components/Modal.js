@@ -88,7 +88,7 @@ export default {
         ref: 'header'
       }, [
         ...buttons,
-        h('h3', this.titleBar)
+        h('h4', this.titleBar)
       ]))
     }
     // dialog body
