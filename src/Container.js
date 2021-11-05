@@ -71,8 +71,8 @@ export default {
             closeButton: val.closeButton,
             maxButton: val.maxButton
           }
-          let w = window;
-          window.iframeRequestOnload = iframeWindow => {
+          let w = val.targetWindow;
+          w.iframeRequestOnload = iframeWindow => {
             w.iframeRequestOnload = undefined;
             if (val.onload) {
               val.onload(iframeWindow);

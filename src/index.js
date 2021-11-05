@@ -1,11 +1,10 @@
 import Container from './Container'
 
 export default {
-  install (Vue, options = {}) {
+  install(Vue, options = {}) {
     const DialogContainer = Vue.extend(Container)
     const dlg = new DialogContainer()
     // document.body.appendChild(dlg.$mount().$el)
-    dlg.$mount(document.body.appendChild(document.createElement('div')))
 
     /**
      * Merge options
@@ -13,13 +12,16 @@ export default {
      */
     const merge = p => {
       const params = {}
-      const { language, closeButton, maxButton, icon } = options
+      const {language, closeButton, maxButton, icon} = options
       params.language = typeof language === 'string' ? language : 'cn'
       if (typeof closeButton === 'boolean') params.closeButton = closeButton
       if (typeof maxButton === 'boolean') params.maxButton = maxButton
       if (typeof icon === 'boolean') params.icon = icon
       return Object.assign({}, params, p)
     }
+    const initDlg = (targetWindow = window) => {
+      dlg.$mount(targetWindow.document.body.appendChild(targetWindow.document.createElement('div')))
+    };
     /**
      * Handle the arguments
      * @param {array} args
@@ -48,8 +50,10 @@ export default {
      */
     Object.defineProperty(Vue.prototype, options.instanceName || '$dlg', {
       value: {
-        modal (url, params = {}) {
+        modal(url, params = {}) {
           if (!url) return
+          params.targetWindow = params.targetWindow || window;
+          initDlg(params.targetWindow);
           params = merge(params)
           params.url = url
           if (typeof params.ondestroy === 'function') {
@@ -78,21 +82,24 @@ export default {
          * open a Alert dialog with callback and options
          * this.$dlg.alert('some message...', ()=>{ do something... }, { messageType: 'error' })
          */
-        alert () {
+        alert() {
           if (!arguments.length || !arguments[0]) return
+          initDlg();
           return dlg.addAlert(paramSet(arguments))
         },
-        mask () {
+        mask() {
+          initDlg();
           return dlg.addMask(paramSet(arguments))
         },
-        toast () {
+        toast() {
           if (!arguments.length || !arguments[0]) return
+          initDlg();
           return dlg.addToast(paramSet(arguments))
         },
-        close (key) {
+        close(key) {
           dlg.close(key)
         },
-        closeAll (callback) {
+        closeAll(callback) {
           dlg.closeAll(callback)
         }
       }
