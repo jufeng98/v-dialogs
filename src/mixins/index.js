@@ -1,4 +1,4 @@
-import { commonConstants } from '../constants'
+import {commonConstants} from '../constants'
 
 export default {
   props: {
@@ -66,6 +66,11 @@ export default {
      * click 'cancel' button in Alert mode ('confirm' message type)
      */
     cancelCallback: Function,
+    targetWindow: {
+      validator(value) {
+        return true;
+      }
+    },
     /**
      * dialog outside click with shaking animation
      */
@@ -78,7 +83,7 @@ export default {
       required: true
     }
   },
-  data () {
+  data() {
     return {
       bodyHeight: 50,
       dialogTop: 0,
@@ -95,7 +100,7 @@ export default {
     /**
      * backdrop click animate
      */
-    outsideClick () {
+    outsideClick() {
       if (!this.backdrop) return
       if (this.backdropClose) {
         this.closeDialog(true)
@@ -110,8 +115,8 @@ export default {
     /**
      * adjust position and size
      */
-    adjust () {
-      const browserHeight = window.innerHeight || document.documentElement.clientHeight
+    adjust() {
+      const browserHeight = this.targetWindow.innerHeight || this.targetWindow.document.documentElement.clientHeight
       let tmp = (browserHeight - this.dialogHeight) / 2
       this.dialogTop = tmp > 30 ? tmp : 30;
 
@@ -122,19 +127,19 @@ export default {
      * @param trigger [boolean] whether close dialog and trigger callback function
      * @param data [object] return data when dialog close(only for modal)
      */
-    closeDialog (trigger, data, closeButtonClick) {
+    closeDialog(trigger, data, closeButtonClick) {
       this.show = false
       setTimeout(() => {
         this.$emit('close', this.dialogKey, trigger, data, closeButtonClick)
       }, 200)
     },
-    calcLayerLevel () {
+    calcLayerLevel() {
       // z-index step number
       const step = 50
       this.dialogZIndex = commonConstants.baseZIndex + (step * this.dialogIndex)
       this.backdropZIndex = this.dialogZIndex - 10
     },
-    autoClose () {
+    autoClose() {
       // auto close dialog
       if (this.closeTime) {
         setTimeout(() => {
@@ -142,7 +147,7 @@ export default {
         }, this.closeTime * 1000)
       }
     },
-    resizeThrottler () {
+    resizeThrottler() {
       // ignore resize events as long as an actualResizeHandler execution is in the queue
       if (!this.resizeTimeout) {
         this.resizeTimeout = setTimeout(() => {
@@ -153,16 +158,16 @@ export default {
       }
     }
   },
-  mounted () {
+  mounted() {
     this.show = true
     if (typeof this.width === 'string') {
-      let windowWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+      let windowWidth = this.targetWindow.innerWidth || this.targetWindow.document.documentElement.clientWidth || this.targetWindow.document.body.clientWidth;
       this.dialogWidth = Math.round(windowWidth * parseFloat(this.width) / 100);
     } else {
       this.dialogWidth = this.width;
     }
     if (typeof this.height === 'string') {
-      let windowHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+      let windowHeight = this.targetWindow.innerHeight || this.targetWindow.document.documentElement.clientHeight || this.targetWindow.document.body.clientHeight;
       this.dialogHeight = Math.round(windowHeight * parseFloat(this.height) / 100);
     } else {
       this.dialogHeight = this.height;
@@ -174,7 +179,7 @@ export default {
       window.addEventListener('resize', this.resizeThrottler, false)
     }
   },
-  destroyed () {
+  destroyed() {
     if (this.type !== 'toast') {
       window.removeEventListener('resize', this.resizeThrottler, false)
     }

@@ -69,7 +69,8 @@ export default {
             params: val.params,
             fullWidth: val.fullWidth,
             closeButton: val.closeButton,
-            maxButton: val.maxButton
+            maxButton: val.maxButton,
+            targetWindow: val.targetWindow
           }
           let w = val.targetWindow;
           w.iframeRequestOnload = iframeWindow => {
@@ -220,6 +221,7 @@ export default {
      * @param key[string] - dialog key
      * @param cancel[boolean] - trigger cancelCallback or not
      * @param data[object] - return data when close dialog(Modal)
+     * @param closeButtonClick
      */
     closeDialog (key, cancel, data, closeButtonClick) {
       if (!key) return
