@@ -1,4 +1,27 @@
 /* Mask mode style sheet */
+.v-dialog-loading-mask
+  position: fixed
+  z-index: 20000
+  background-color: rgba(255,255,255,.9)
+  margin: 0
+  top: 0
+  right: 0
+  bottom: 0
+  left: 0
+  -webkit-transition: opacity .3s
+  transition: opacity .3s
+
+.v-dialog-loading-mask-spinner
+  top: 30%
+  left: 45%
+  position: absolute
+  color: #409EFF
+  font-size: 14px
+  display: block
+  margin-block-start: 1em
+  margin-block-end: 1em
+  margin-inline-start: 0
+  margin-inline-end: 0
 
 .v-dialog-mask__container
   background-repeat: no-repeat
@@ -41,7 +64,7 @@
     -moz-animation: timerhand 2s linear infinite
     animation: timerhand 2s linear infinite
     background-color: #666
-  
+
   &:before
     top: 17px
     left: 17px

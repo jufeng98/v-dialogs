@@ -27,7 +27,7 @@ export default {
       default: true
     }
   },
-  data () {
+  data() {
     return {
       maximize: false,
       animate: false,
@@ -36,7 +36,7 @@ export default {
     };
   },
   computed: {
-    classes () {
+    classes() {
       return {
         'v-dialog': true,
         'v-dialog-modal': true,
@@ -44,11 +44,11 @@ export default {
         'v-dialog--buzz-out': this.shake
       }
     },
-    maxClass () {
+    maxClass() {
       return this.maximize ? 'dlg-icon-restore' : 'dlg-icon-max'
     }
   },
-  render (h) {
+  render(h) {
     const child = []
     // dialog header
     if (this.titleBar !== false) {
@@ -65,7 +65,7 @@ export default {
             }
           }
         }, [
-          h('i', { class: 'dlg-icon-font dlg-icon-close' })
+          h('i', {class: 'dlg-icon-font dlg-icon-close'})
         ]))
       }
       if (this.maxButton) {
@@ -96,15 +96,31 @@ export default {
       class: 'v-dialog-body',
       style: {
         height: 'calc(100% - 30px)',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        transform: 'rotate(0)'
       }
     }, [
+      h('div', {
+        attrs: {
+          id: 'v-dialog-loading-div',
+          class: 'v-dialog-loading-mask',
+        },
+      }, [
+        h('div', {
+          attrs: {
+            class: 'v-dialog-loading-mask-spinner',
+          },
+        }, [
+          h('p', {}, '加载中……'),
+        ]),
+      ]),
       // Dynamic component
       h('iframe', {
         attrs: {
           style: 'width:100%;height:100%;',
           frameborder: '0',
-          onload: 'window.iframeRequestOnload(this.contentWindow)',
+          onload: 'let masks=document.getElementsByClassName("v-dialog-loading-mask");let len=masks.length;for(let i=0;i<len;i++){masks[i].style.display="none";}window.iframeRequestOnload(this.contentWindow)',
+          onerror: 'let masks=document.getElementsByClassName("v-dialog-loading-mask");let len=masks.length;for(let i=0;i<len;i++){masks[i].style.display="none";}window.iframeRequestOnload(this.contentWindow)',
           src: this.url
         },
         on: {
@@ -140,26 +156,26 @@ export default {
     /**
      * dialog max size
      */
-    max () {
+    max() {
       if (!this.animate) this.animate = true
       this.maximize = !this.maximize
       this.modalAdjust()
     },
-    modalAdjust () {
+    modalAdjust() {
       if (this.maximize) this.dialogTop = 0
       else this.adjust()
     },
-    modalClose (data) {
+    modalClose(data) {
       this.closeDialog(false, data)
     }
   },
-  mounted () {
+  mounted() {
     window.modalVue = this;
     this.$nextTick(() => {
       this.modalAdjust()
     })
   },
-  destroyed () {
+  destroyed() {
     window.modalVue = undefined;
   }
 }
