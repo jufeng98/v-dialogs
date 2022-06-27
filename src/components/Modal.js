@@ -25,7 +25,12 @@ export default {
     closeButton: {
       type: Boolean,
       default: true
-    }
+    },
+    beforeClose: {
+      type: Function,
+      default: null
+    },
+    targetWindow: {}
   },
   data() {
     return {
@@ -61,27 +66,39 @@ export default {
           },
           on: {
             click: () => {
-              this.closeDialog(true, {}, true);
+              let that = this;
+              if (this.beforeClose) {
+                this.beforeClose(function (){
+                  that.closeDialog(true, {}, true);
+                });
+              } else {
+                this.closeDialog(true, {}, true);
+              }
             }
           }
         }, [
           h('i', {class: 'dlg-icon-font dlg-icon-close'})
         ]))
       }
-      if (this.maxButton) {
-        buttons.push(h('button', {
-          class: 'v-dialog-btn__maximize',
-          attrs: {
-            type: 'button'
-          },
-          on: {
-            click: this.max
-          }
-        }, [
-          h('i', {
-            class: ['dlg-icon-font', this.maxClass]
-          })
-        ]))
+      if (this.fullWidth) {
+        this.dialogTop = 0;
+        this.maximize = true;
+      } else {
+        if (this.maxButton) {
+          buttons.push(h('button', {
+            class: 'v-dialog-btn__maximize',
+            attrs: {
+              type: 'button'
+            },
+            on: {
+              click: this.max
+            }
+          }, [
+            h('i', {
+              class: ['dlg-icon-font', this.maxClass]
+            })
+          ]))
+        }
       }
       child.push(h('div', {
         class: 'v-dialog-header',
@@ -89,7 +106,7 @@ export default {
       }, [
         ...buttons,
         h('h3', this.titleBar)
-      ]))
+      ]));
     }
     // dialog body
     child.push(h('div', {
@@ -119,8 +136,8 @@ export default {
         attrs: {
           style: 'width:100%;height:100%;',
           frameborder: '0',
-          onload: 'let masks=document.getElementsByClassName("v-dialog-loading-mask");let len=masks.length;for(let i=0;i<len;i++){masks[i].style.display="none";}window.iframeRequestOnload(this.contentWindow)',
-          onerror: 'let masks=document.getElementsByClassName("v-dialog-loading-mask");let len=masks.length;for(let i=0;i<len;i++){masks[i].style.display="none";}window.iframeRequestOnload(this.contentWindow)',
+          onload: 'let masks=document.getElementsByClassName("v-dialog-loading-mask");let len=masks.length;for(let i=0;i<len;i++){masks[i].style.display="none";}if(window.iframeRequestOnload)window.iframeRequestOnload(this.contentWindow)',
+          onerror: 'let masks=document.getElementsByClassName("v-dialog-loading-mask");let len=masks.length;for(let i=0;i<len;i++){masks[i].style.display="none";}if(window.iframeRequestOnload)window.iframeRequestOnload(this.contentWindow)',
           src: this.url
         },
         on: {

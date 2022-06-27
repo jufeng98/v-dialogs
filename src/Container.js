@@ -70,7 +70,8 @@ export default {
             fullWidth: val.fullWidth,
             closeButton: val.closeButton,
             maxButton: val.maxButton,
-            targetWindow: val.targetWindow
+            targetWindow: val.targetWindow,
+            beforeClose: val.beforeClose,
           }
           let w = val.targetWindow;
           w.iframeRequestOnload = iframeWindow => {
@@ -188,7 +189,7 @@ export default {
      * 'topRight'
      * 'bottomLeft'
      * 'bottomCenter'
-     * 'bottomRight'
+     * 'bottomRight'ondestroy
      */
     addToast (p) {
       p.type = TOAST

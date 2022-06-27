@@ -55,7 +55,11 @@ export default {
           params.targetWindow = params.targetWindow || window;
           initDlg(params.targetWindow);
           params = merge(params)
-          params.url = url
+          if (url.indexOf(options.contextPath)===-1){
+            params.url = options.contextPath + url
+          }else{
+            params.url = url
+          }
           if (typeof params.ondestroy === 'function') {
             params.callback = params.ondestroy;
           }
